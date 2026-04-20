@@ -30,8 +30,8 @@
 
 	const creditStore = getCreditsStore();
 
-	let statusMessage = '';
-	let statusType: 'success' | 'error' | '' = '';
+	let statusMessage = $state('');
+	let statusType = $state<'success' | 'error' | ''>('');
 	const canMultiple = $derived(creditStore.amount ? creditStore.amount > 0 : false);
 
 	$effect(() => {
