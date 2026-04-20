@@ -1,10 +1,5 @@
-import { guestLimiter } from '$lib/rate-limiter';
-import { error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import { env } from '$env/dynamic/private';
-import { db } from '$lib/server/db';
-import * as table from '$lib/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async (event) => {
 	const { request, locals } = event;
@@ -13,23 +8,25 @@ export const POST: RequestHandler = async (event) => {
 
 	const formData = await request.formData();
 	const files = formData.getAll('image');
-	const isLimited = await guestLimiter.isLimited(event);
-	if (env.NODE_ENV === 'production') {
-		if (!locals.user && isLimited) {
-			throw error(429, 'Kuota free tier-mu sudah habis, daftar untuk mendapatkan 5 saldo gratis');
-		}
 
-		if (locals.user?.creditsAmount === 0 && isLimited) {
-			throw error(
-				429,
-				'Kamu hanya mendapatkan kuota free tier 3 kali per hari, silakan topup terlebih dahulu'
-			);
-		}
-	}
+	// Remove all rate limiting and credit checks for free unlimited usage
+	// const isLimited = await guestLimiter.isLimited(event);
+	// if (env.NODE_ENV === 'production') {
+	// 	if (!locals.user && isLimited) {
+	// 		throw error(429, 'Kuota free tier-mu sudah habis, daftar untuk mendapatkan 5 saldo gratis');
+	// 	}
 
-	if (locals.user?.creditsAmount && files.length > locals.user.creditsAmount) {
-		throw error(429, 'Saldomu tidak mencukupi, silakan topup terlebih dahulu');
-	}
+	// 	if (locals.user?.creditsAmount === 0 && isLimited) {
+	// 		throw error(
+	// 			429,
+	// 			'Kamu hanya mendapatkan kuota free tier 3 kali per hari, silakan topup terlebih dahulu'
+	// 		);
+	// 	}
+	// }
+
+	// if (locals.user?.creditsAmount && files.length > locals.user.creditsAmount) {
+	// 	throw error(429, 'Saldomu tidak mencukupi, silakan topup terlebih dahulu');
+	// }
 
 	const result = await Promise.allSettled(
 	files.map(async (image) => {
@@ -63,30 +60,25 @@ export const POST: RequestHandler = async (event) => {
 		}
 	}
 
-	let creditsAmount = undefined;
-	if (locals.user && locals.user.creditsAmount && locals.user.creditsAmount > 0) {
-		const [row] = await db
-			.update(table.credits)
-			.set({
-				amount: sql`${table.credits.amount} - ${files.length}`
-			})
-			.where(eq(table.credits.id, locals.user.id))
-			.returning({ amount: table.credits.amount });
+	// Remove credit deduction for free unlimited usage
+	// let creditsAmount = undefined;
+	// if (locals.user && locals.user.creditsAmount && locals.user.creditsAmount > 0) {
+	// 	const [row] = await db
+	// 		.update(table.credits)
+	// 		.set({
+	// 			amount: sql`${table.credits.amount} - ${files.length}`
+	// 		})
+	// 		.where(eq(table.credits.id, locals.user.id))
+	// 		.returning({ amount: table.credits.amount });
 
-		if (!row) {
-			throw new Error('Error updating credits');
-		}
+	// 	if (!row) {
+	// 		throw new Error('Error updating credits');
+	// 	}
 
-		creditsAmount = row.amount;
-	}
+	// 	creditsAmount = row.amount;
+	// }
 
-	return new Response(JSON.stringify({ images: output, creditsAmount }), {
+	return new Response(JSON.stringify({ images: output }), {
 		headers: { 'Content-Type': 'application/json' }
 	});
 };
-
-async function blobToBase64(blob: Blob) {
-	const arrayBuffer = await blob.arrayBuffer();
-	const base64 = Buffer.from(arrayBuffer).toString('base64');
-	return base64;
-}
