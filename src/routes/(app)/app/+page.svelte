@@ -23,7 +23,7 @@
 </script>
 
 <svelte:head>
-	<title>{isLoading ? '[Processing...] ' : ''}Remove Biji - Hilangkan bijimu dengan mudah</title>
+	<title>{isLoading ? '[Processing...] ' : ''}Remove BG - Hilangkan backgroundmu dengan mudah</title>
 </svelte:head>
 
 <div class="mt-4 flex flex-wrap items-start gap-4 md:flex-nowrap">

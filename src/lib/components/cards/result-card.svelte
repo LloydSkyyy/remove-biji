@@ -10,7 +10,6 @@
 	import { fade } from 'svelte/transition';
 	import { v4 as uuidv4 } from 'uuid';
 	import { withCatch } from '@tfkhdyt/with-catch';
-	import toast from 'svelte-french-toast';
 
 	type Props = {
 		outputs: Blob[];
@@ -23,7 +22,7 @@
 	async function handleDownloadAll() {
 		const [err] = await withCatch(downloadAll(outputs));
 		if (err) {
-			toast.error(err.message);
+			console.error(err.message);
 		}
 	}
 </script>
@@ -43,7 +42,7 @@
 			>
 				<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 				{#each outputs as _, i (i)}
-					<div class="max-h-[450px]' group relative mx-auto" animate:flip={{ duration: 400 }}>
+					<div class="max-h-[450px] group relative mx-auto" animate:flip={{ duration: 400 }}>
 						<img
 							src={outputPreviews[i]}
 							alt="output {i + 1}"

@@ -67,7 +67,7 @@
 </script>
 
 <svelte:head>
-	<title>Remove Biji - Hilangkan bijimu dengan mudah</title>
+	<title>Remove BG - Hilangkan backgroundmu dengan mudah</title>
 </svelte:head>
 
 <div class="relative min-h-screen">

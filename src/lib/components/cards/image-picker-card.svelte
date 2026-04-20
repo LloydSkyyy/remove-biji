@@ -8,7 +8,6 @@
 	import FileDropzone from '../file-dropzone.svelte';
 	import ResetIcon from '$lib/icons/reset-icon.svelte';
 	import { removeBg } from '$lib/remove-bg';
-	import toast from 'svelte-french-toast';
 	import { z } from 'zod';
 	import BgReplaceIcon from '$lib/icons/bg-replace-icon.svelte';
 	import { withCatch } from '@tfkhdyt/with-catch';
@@ -31,18 +30,27 @@
 
 	const creditStore = getCreditsStore();
 
+	let statusMessage = '';
+	let statusType: 'success' | 'error' | '' = '';
+	const canMultiple = $derived(creditStore.amount ? creditStore.amount > 0 : false);
+
+	$effect(() => {
+		if (!images || images.length === 0) {
+			statusMessage = '';
+			statusType = '';
+		}
+	});
+
 	async function handleRemoveBg() {
 		isLoading = true;
 		outputs = [];
 
 		const [err, data] = await withCatch(removeBg(images));
 		if (err) {
-			if (err instanceof z.ZodError) {
-				toast.error(err.issues[0].message);
-			} else {
-				toast.error(err.message);
-			}
+			statusType = 'error';
+			statusMessage = err instanceof z.ZodError ? err.issues[0].message : err.message;
 			isLoading = false;
+			return;
 		}
 
 		await Promise.allSettled(
@@ -54,12 +62,11 @@
 
 		creditStore.setAmount(data?.creditsAmount ?? 0);
 
-		toast.success('Proses berhasil');
+		statusType = 'success';
+		statusMessage = 'Proses berhasil';
 
 		isLoading = false;
 	}
-
-	const canMultiple = $derived(creditStore.amount ? creditStore.amount > 0 : false);
 </script>
 
 <div class="card w-full md:w-1/2">
@@ -143,5 +150,12 @@
 				>
 			{/if}
 		</footer>
+	{/if}
+	{#if statusMessage}
+		<div class="p-4 text-center">
+			<p class={clsx(statusType === 'error' ? 'text-red-500' : 'text-green-600')}>
+				{statusMessage}
+			</p>
+		</div>
 	{/if}
 </div>

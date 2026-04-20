@@ -16,27 +16,21 @@
 	const socialMedias: SocialMedia[] = [
 		{
 			icon: GithubIcon,
-			url: 'https://www.github.com/tfkhdyt'
 		},
 		{
 			icon: FacebookIcon,
-			url: 'https://www.facebook.com/tfkhdyt142'
 		},
 		{
 			icon: LinkedinIcon,
-			url: 'https://www.linkedin.com/in/tfkhdyt142'
 		},
 		{
 			icon: InstagramIcon,
-			url: 'https://www.instagram.com/_tfkhdyt_/'
 		},
 		{
 			icon: TwitterIcon,
-			url: 'https://x.com/tfkhdyt__'
 		},
 		{
 			icon: YoutubeIcon,
-			url: 'https://www.youtube.com/@tfkhdyt'
 		}
 	];
 
@@ -48,7 +42,7 @@
 	use:transition={'footer'}
 >
 	<div class="flex flex-wrap items-center justify-center gap-x-2 text-sm md:text-base">
-		<span>Copyright © 2024 Taufik Hidayat</span>
+		<span>Copyright © 2026 Sabiq</span>
 		<span>•</span>
 		<a href="/privacy-policy" class="hover:underline">Privacy Policy</a>
 	</div>

@@ -65,9 +65,9 @@
 				<CircleIcon class="size-8" />
 				<CircleIcon class="-ml-3 size-8" />
 			</div>
-			Remove Biji
+			Remove BG
 		</a>
-		<h2 class="h6 text-gray-600 dark:text-gray-400">Hilangkan bijimu dengan mudah</h2>
+		<h2 class="h6 text-gray-600 dark:text-gray-400">Hilangkan background dengan mudah</h2>
 	</div>
 	<div class="hidden items-center space-x-8 lg:flex">
 		{#if user}
